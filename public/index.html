@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peta Karbon Zakat Hijau — Prototipe Riset</title>
+  <meta name="description" content="Prototipe platform pengukuran, pemetaan, dan optimasi alokasi Zakat Hijau rendah karbon di Indonesia." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="assets/vendor/leaflet.css" />
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="topstrip"></div>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#ringkasan" data-tab="ringkasan">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#1E7B3C"/><path d="M20 8c-6 6-9 11-9 16a9 9 0 0 0 18 0c0-5-3-10-9-16z" fill="#fff"/><path d="M20 15v17M20 22l-4-3M20 26l4-3" stroke="#1E7B3C" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </span>
+        <span class="brand-text">
+          <strong>Peta Karbon Zakat Hijau</strong>
+          <small>Pengukuran · Pemetaan · Optimasi Alokasi</small>
+        </span>
+      </a>
+      <button class="menu-btn" aria-label="Menu" id="menuBtn">☰</button>
+    </div>
+    <nav class="tabs wrap" id="tabs">
+      <button class="tab active" data-tab="ringkasan">Ringkasan</button>
+      <button class="tab" data-tab="peta">Peta</button>
+      <button class="tab" data-tab="portofolio">Portofolio Alokasi</button>
+      <button class="tab" data-tab="data">Data Program</button>
+      <button class="tab" data-tab="metodologi">Metodologi</button>
+    </nav>
+  </header>
+
+  <div class="notice">
+    <div class="wrap">Prototipe riset RCC untuk usulan Beasiswa Riset BAZNAS 2026. <b>Seluruh angka adalah data ilustrasi</b>, bukan data resmi BAZNAS.</div>
+  </div>
+
+  <main class="wrap">
+    <!-- ================= RINGKASAN ================= -->
+    <section class="panel active" id="panel-ringkasan">
+      <div class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-text">
+          <span class="eyebrow">Green Zakat · Data-Driven · Rendah Karbon</span>
+          <h1>Zakat untuk <span class="rotator" id="rotator">bumi yang lebih hijau</span></h1>
+          <p>Memetakan program Zakat Hijau di seluruh Indonesia, mengukur emisi karbon yang dicegah, dan merekomendasikan portofolio alokasi zakat yang berdampak ganda: bagi mustahik dan bagi lingkungan.</p>
+          <div class="hero-actions">
+            <button class="btn btn-red" data-goto="portofolio">Optimasi Alokasi</button>
+            <button class="btn btn-outline" data-goto="peta">Lihat Peta</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div id="hero3d" aria-label="Globe 3D sebaran program Zakat Hijau" role="img"></div>
+          <div class="float-chip chip-a"><span class="pulse-dot"></span><b id="chipProg">0</b> program aktif</div>
+          <div class="float-chip chip-b"><b id="chipCo2">0</b> tCO₂e/thn dicegah</div>
+          <div class="drag-hint">Seret untuk memutar globe</div>
+        </div>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>Emisi dicegah per aspek</h3><span class="muted">ton CO₂e per tahun</span></div>
+          <div class="chart-box"><canvas id="chartEmisiAspek"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Alokasi dana Zakat Hijau</h3><span class="muted">komposisi per aspek</span></div>
+          <div class="chart-box"><canvas id="chartDanaAspek"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>10 provinsi teratas</h3><span class="muted">ton CO₂e per tahun</span></div>
+          <div class="chart-box tall"><canvas id="chartProvinsi"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Efisiensi biaya karbon</h3><span class="muted">rupiah per ton CO₂e (lebih kecil lebih efisien)</span></div>
+          <div class="chart-box tall"><canvas id="chartEfisiensi"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PETA ================= -->
+    <section class="panel" id="panel-peta">
+      <div class="map-layout">
+        <aside class="card filters">
+          <h3>Filter</h3>
+          <label class="lbl">Tahun</label>
+          <select id="fTahun"><option value="">Semua tahun</option></select>
+          <label class="lbl">Pelaksana</label>
+          <select id="fPelaksana"><option value="">Semua pelaksana</option></select>
+          <label class="lbl">Ukuran titik</label>
+          <select id="fUkuran">
+            <option value="tco2e">Emisi dicegah (tCO₂e)</option>
+            <option value="dana">Dana (Rp)</option>
+            <option value="mustahik">Jumlah mustahik</option>
+          </select>
+          <label class="lbl">Aspek Zakat Hijau</label>
+          <div id="fAspek" class="aspek-list"></div>
+          <div class="map-sum" id="mapSum"></div>
+        </aside>
+        <div class="card map-card">
+          <div id="map"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Rekap per provinsi</h3><span class="muted">mengikuti filter peta</span></div>
+        <div class="table-wrap"><table class="tbl" id="tblProv"></table></div>
+      </div>
+    </section>
+
+    <!-- ================= PORTOFOLIO ================= -->
+    <section class="panel" id="panel-portofolio">
+      <div class="grid-port">
+        <aside class="card">
+          <h3>Parameter optimasi</h3>
+          <p class="muted small">Model memaksimalkan gabungan pengurangan emisi dan kesejahteraan mustahik, dikurangi penalti risiko, dengan hasil yang semakin menurun (diminishing returns) pada setiap aspek.</p>
+          <label class="lbl">Total dana Zakat Hijau (Rp miliar)</label>
+          <input type="number" id="pBudget" min="1" step="1" />
+          <label class="lbl">Hak amil dikeluarkan (%)</label>
+          <input type="number" id="pAmil" min="0" max="12.5" step="0.5" value="12.5" />
+          <label class="lbl">Bobot emisi vs kesejahteraan: <b id="pLambdaVal"></b></label>
+          <input type="range" id="pLambda" min="0" max="100" value="60" />
+          <div class="range-legend"><span>Kesejahteraan</span><span>Emisi</span></div>
+          <label class="lbl">Penalti risiko: <b id="pGammaVal"></b></label>
+          <input type="range" id="pGamma" min="0" max="100" value="30" />
+          <div class="two">
+            <div><label class="lbl">Min per aspek (%)</label><input type="number" id="pMin" min="0" max="10" step="1" value="3" /></div>
+            <div><label class="lbl">Maks per aspek (%)</label><input type="number" id="pMax" min="12" max="100" step="1" value="30" /></div>
+          </div>
+          <button class="btn btn-red full" id="btnOpt">Jalankan Optimasi</button>
+          <p class="muted small">Hasil optimasi adalah rekomendasi. Penetapan alokasi tetap menjadi wewenang pimpinan BAZNAS dan wajib memenuhi ketentuan syariah (asnaf).</p>
+        </aside>
+        <div>
+          <div class="kpis kpis-3" id="optKpis"></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head"><h3>Alokasi saat ini vs rekomendasi</h3><span class="muted">Rp miliar</span></div>
+              <div class="chart-box tall"><canvas id="chartAlok"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Pareto front</h3><span class="muted">setiap titik = satu bobot emisi</span></div>
+              <div class="chart-box tall"><canvas id="chartPareto"></canvas></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Rincian portofolio</h3><span class="muted">proyeksi per tahun</span></div>
+            <div class="table-wrap"><table class="tbl" id="tblPort"></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= DATA ================= -->
+    <section class="panel" id="panel-data">
+      <div class="card">
+        <div class="toolbar">
+          <input type="search" id="qSearch" placeholder="Cari nama program atau provinsi…" />
+          <select id="qAspek"><option value="">Semua aspek</option></select>
+          <button class="btn btn-green" id="btnCsv">Unduh CSV</button>
+        </div>
+        <div class="muted small" id="qCount"></div>
+        <div class="table-wrap"><table class="tbl sortable" id="tblData"></table></div>
+      </div>
+    </section>
+
+    <!-- ================= METODOLOGI ================= -->
+    <section class="panel" id="panel-metodologi">
+      <div class="card prose">
+        <h2>Metodologi ringkas</h2>
+        <p>Platform ini adalah prototipe dari usulan riset <i>Pengukuran, Pemetaan, dan Optimasi Alokasi Zakat Hijau Rendah Karbon: Pendekatan Data-Driven untuk Kebijakan Zakat Berbasis Bukti melalui Platform Digital</i> (Klaster C, topik C.4). Kerangka aspek mengikuti <b>Green Zakat Framework</b> yang disusun BAZNAS, BSI, UNDP, dan IPB University.</p>
+
+        <h3>1. Klasifikasi program</h3>
+        <p>Setiap program dipetakan ke salah satu dari sembilan aspek penyaluran Zakat Hijau. Pada tahap riset, klasifikasi dilakukan otomatis dengan model machine learning (NLP bahasa Indonesia) yang dilatih dari data berlabel manual.</p>
+
+        <h3>2. Estimasi emisi yang dicegah</h3>
+        <div class="formula">tCO₂e<sub>program</sub> = data aktivitas × faktor emisi</div>
+        <p>Faktor emisi di bawah ini <b>asumsi ilustratif</b> untuk prototipe. Pada riset akan diganti dengan faktor emisi resmi (IPCC, KLHK, ESDM) dan dibandingkan dengan pendekatan Kalkulator Hijau Bank Indonesia.</p>
+        <div class="table-wrap"><table class="tbl" id="tblEf"></table></div>
+
+        <h3>3. Optimasi portofolio alokasi</h3>
+        <p>Untuk setiap aspek <i>i</i> dihitung intensitas karbon <i>c<sub>i</sub></i> (tCO₂e per rupiah), intensitas kesejahteraan <i>w<sub>i</sub></i> (mustahik × skor IKB per rupiah), dan risiko <i>r<sub>i</sub></i>. Skor gabungan:</p>
+        <div class="formula">s<sub>i</sub> = [ λ·ĉ<sub>i</sub> + (1−λ)·ŵ<sub>i</sub> ] · (1 − γ·r<sub>i</sub>)</div>
+        <p>Manfaat aspek dibuat menurun (diminishing returns) dengan kapasitas serap <i>K<sub>i</sub></i>:</p>
+        <div class="formula">maks Σ s<sub>i</sub>·K<sub>i</sub>·(1 − e<sup>−x<sub>i</sub>/K<sub>i</sub></sup>) &nbsp;dengan&nbsp; Σ x<sub>i</sub> = B(1 − amil), &nbsp; L ≤ x<sub>i</sub> ≤ U</div>
+        <p>Solusi dihitung dengan metode <i>water-filling</i> (kondisi KKT, bisection pada pengali Lagrange). Pareto front diperoleh dengan menjalankan optimasi untuk λ = 0 sampai 1.</p>
+
+        <h3>4. Keterbatasan prototipe</h3>
+        <ul>
+          <li>Data program, lokasi, dana, dan dampak adalah simulasi.</li>
+          <li>Faktor emisi dan biaya per unit adalah asumsi ilustratif.</li>
+          <li>Kendala syariah (asnaf) baru direpresentasikan lewat pengurangan hak amil dan batas per aspek.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Peta Karbon Zakat Hijau</b> — prototipe riset Research Collaboration Community (RCC)</p>
+      <p class="muted-light">Bukan situs resmi BAZNAS. Data pada prototipe ini adalah ilustrasi.</p>
+      <p class="gold">© 2026 RCC</p>
+    </div>
+  </footer>
+
+  <script src="assets/vendor/leaflet.js"></script>
+  <script src="assets/vendor/chart.umd.min.js"></script>
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+  <script type="module" src="assets/hero3d.js"></script>
+</body>
+</html>
